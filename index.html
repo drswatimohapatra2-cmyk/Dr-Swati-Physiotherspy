@@ -1,0 +1,768 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Home visit physiotherapy services across Cuttack by Swati Mohapatra, BPT. Contact for appointments and enquiries.">
+  <title>Swati Mohapatra | Home Visit Physiotherapy in Cuttack</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --cream: #f8f5ef;
+      --beige: #e9dfd0;
+      --brown: #705744;
+      --dark: #332b25;
+      --muted: #81766b;
+      --white: #fff;
+      --green: #526d58;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: "DM Sans", sans-serif;
+      background: var(--cream);
+      color: var(--dark);
+      line-height: 1.7;
+    }
+
+    h1, h2, h3 {
+      font-family: "Playfair Display", serif;
+      line-height: 1.2;
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    .container {
+      width: min(1120px, 90%);
+      margin: auto;
+    }
+
+    .topbar {
+      background: var(--brown);
+      color: white;
+      text-align: center;
+      padding: 8px 15px;
+      font-size: 13px;
+    }
+
+    header {
+      background: rgba(248,245,239,.96);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      border-bottom: 1px solid #e8dfd3;
+    }
+
+    nav {
+      min-height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .logo {
+      font-family: "Playfair Display", serif;
+      font-size: 23px;
+      font-weight: 700;
+      color: var(--brown);
+    }
+
+    .logo span {
+      display: block;
+      font: 11px "DM Sans", sans-serif;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 25px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .nav-links a:hover { color: var(--brown); }
+
+    .button {
+      display: inline-block;
+      padding: 13px 23px;
+      border-radius: 5px;
+      background: var(--brown);
+      color: white;
+      font-weight: 600;
+      border: 1px solid var(--brown);
+      transition: .25s;
+      cursor: pointer;
+    }
+
+    .button:hover {
+      background: var(--dark);
+      transform: translateY(-2px);
+    }
+
+    .button-outline {
+      background: transparent;
+      color: var(--brown);
+    }
+
+    .button-outline:hover { color: white; }
+
+    .hero {
+      padding: 75px 0;
+      background: linear-gradient(110deg, #f3ece1 0%, #f8f5ef 65%);
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.05fr .95fr;
+      align-items: center;
+      gap: 55px;
+    }
+
+    .eyebrow {
+      color: var(--brown);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+
+    .hero h1 {
+      font-size: clamp(40px, 5vw, 62px);
+      margin-bottom: 22px;
+    }
+
+    .hero h1 span { color: var(--brown); }
+
+    .hero p {
+      color: var(--muted);
+      max-width: 540px;
+      margin-bottom: 28px;
+    }
+
+    .hero-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .hero-image {
+      height: 440px;
+      border-radius: 180px 180px 12px 12px;
+      overflow: hidden;
+      background: var(--beige);
+    }
+
+    .hero-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    section { padding: 85px 0; }
+
+    .section-heading {
+      text-align: center;
+      max-width: 680px;
+      margin: 0 auto 45px;
+    }
+
+    .section-heading h2 {
+      font-size: clamp(30px, 4vw, 43px);
+      margin-bottom: 15px;
+    }
+
+    .section-heading p { color: var(--muted); }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: .85fr 1.15fr;
+      align-items: center;
+      gap: 55px;
+    }
+
+    .about-image {
+      height: 390px;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .about-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .about-content h2 {
+      font-size: 38px;
+      margin-bottom: 18px;
+    }
+
+    .about-content p {
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    .credential {
+      margin-top: 22px;
+      padding: 18px;
+      background: var(--beige);
+      border-left: 4px solid var(--brown);
+      border-radius: 4px;
+    }
+
+    .credential strong { display: block; }
+
+    .services { background: #f0e9df; }
+
+    .service-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .service-card {
+      background: white;
+      padding: 28px;
+      border-radius: 9px;
+      border: 1px solid #e9dfd3;
+      transition: .25s;
+    }
+
+    .service-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 30px #59432a12;
+    }
+
+    .service-icon {
+      font-size: 27px;
+      margin-bottom: 15px;
+    }
+
+    .service-card h3 {
+      font-size: 21px;
+      margin-bottom: 10px;
+    }
+
+    .service-card p {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 25px;
+      text-align: center;
+    }
+
+    .why-card {
+      padding: 25px;
+      background: white;
+      border-radius: 8px;
+    }
+
+    .why-card h3 { margin: 12px 0 8px; }
+
+    .why-card p {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .step {
+      text-align: center;
+      padding: 25px;
+      border: 1px solid #e3d9cc;
+      border-radius: 8px;
+    }
+
+    .step-number {
+      width: 42px;
+      height: 42px;
+      margin: 0 auto 15px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: var(--brown);
+      color: white;
+      font-weight: 700;
+    }
+
+    .step p {
+      color: var(--muted);
+      font-size: 14px;
+      margin-top: 8px;
+    }
+
+    .faq { background: #f0e9df; }
+
+    details {
+      background: white;
+      padding: 19px 22px;
+      margin: 12px auto;
+      max-width: 780px;
+      border-radius: 6px;
+    }
+
+    summary {
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    details p {
+      color: var(--muted);
+      padding-top: 12px;
+    }
+
+    .contact {
+      background: var(--brown);
+      color: white;
+    }
+
+    .contact .section-heading p { color: #eee1d3; }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: .9fr 1.1fr;
+      gap: 35px;
+      align-items: start;
+    }
+
+    .contact-info h3 {
+      font-size: 27px;
+      margin-bottom: 15px;
+    }
+
+    .contact-info p {
+      color: #eee1d3;
+      margin-bottom: 18px;
+    }
+
+    .contact-info .button {
+      background: white;
+      color: var(--brown);
+      border-color: white;
+      margin: 5px 5px 5px 0;
+    }
+
+    form {
+      background: white;
+      color: var(--dark);
+      padding: 28px;
+      border-radius: 9px;
+    }
+
+    form h3 {
+      font-size: 25px;
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      margin: 13px 0 5px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd2c5;
+      border-radius: 5px;
+      font: inherit;
+      background: #fffdfa;
+    }
+
+    textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    form .button {
+      width: 100%;
+      margin-top: 18px;
+    }
+
+    .form-note {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 12px;
+    }
+
+    footer {
+      background: #2e2823;
+      color: #e9dfd0;
+      text-align: center;
+      padding: 25px 15px;
+      font-size: 13px;
+    }
+
+    footer p { margin: 5px; }
+
+    .whatsapp-float {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      z-index: 20;
+      background: #287b4b;
+      color: white;
+      padding: 13px 18px;
+      border-radius: 40px;
+      font-weight: 700;
+      box-shadow: 0 5px 18px #0002;
+    }
+
+    @media (max-width: 800px) {
+      .nav-links { gap: 12px; font-size: 12px; }
+      .nav-links .button { padding: 9px 12px; }
+      .hero-grid, .about-grid, .contact-grid { grid-template-columns: 1fr; }
+      .hero-image { height: 350px; }
+      .about-image { height: 300px; }
+      .service-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 560px) {
+      nav { padding: 13px 0; align-items: flex-start; }
+      .logo { font-size: 19px; }
+      .nav-links { flex-wrap: wrap; justify-content: flex-end; gap: 8px 12px; }
+      .nav-links a { font-size: 11px; }
+      .nav-links .button { display: none; }
+      .hero { padding: 55px 0; }
+      section { padding: 60px 0; }
+      .service-grid, .why-grid, .steps { grid-template-columns: 1fr; }
+      .hero-image { height: 290px; }
+      form { padding: 20px; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="topbar">
+    Home Visit Physiotherapy Services Across Cuttack
+  </div>
+
+  <header>
+    <nav class="container">
+      <a href="#" class="logo">
+        Dr Swati Mohapatra
+        <span>Physiotherapy at Home</span>
+      </a>
+
+      <div class="nav-links">
+        <a href="#home">Home</a>
+        <a href="#about">About</a>
+        <a href="#services">Services</a>
+        <a href="#faq">FAQs</a>
+        <a href="#contact">Contact</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <div class="container hero-grid">
+        <div>
+          <div class="eyebrow">Personalised care at your home</div>
+          <h1>Physiotherapy care, <span>where you feel comfortable.</span></h1>
+          <p>
+            Convenient home visit physiotherapy services across Cuttack.
+            Get in touch to enquire about appointments and available services.
+          </p>
+          <div class="hero-buttons">
+            <a class="button" href="#contact">Book a Home Visit</a>
+            <a class="button button-outline" href="#services">Explore Services</a>
+          </div>
+        </div>
+
+        <div class="hero-image">
+          <img
+            src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1000&q=85"
+            alt="Healthcare professional in a clinical setting">
+        </div>
+      </div>
+    </section>
+
+    <section id="about">
+      <div class="container about-grid">
+        <div class="about-image">
+          <img
+            src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=900&q=85"
+            alt="Physiotherapy and healthcare environment">
+        </div>
+
+        <div class="about-content">
+          <div class="eyebrow">Get to know your physiotherapist</div>
+          <h2>About Swati Mohapatra</h2>
+          <p>
+            Swati Mohapatra is a physiotherapist providing home visit
+            physiotherapy services across Cuttack.
+          </p>
+          <p>
+            Her approach focuses on understanding individual needs and
+            providing appropriate physiotherapy support at home.
+          </p>
+
+          <div class="credential">
+            <strong>Qualification: Bachelor of Physiotherapy (BPT)</strong>
+            West Bengal University of Health Sciences, Kolkata
+            <br><br>
+            <strong>Experience: 6–7 years</strong>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="services" id="services">
+      <div class="container">
+        <div class="section-heading">
+          <div class="eyebrow">What we offer</div>
+          <h2>Physiotherapy Services</h2>
+          <p>Enquire about suitable home-based physiotherapy support.</p>
+        </div>
+
+        <div class="service-grid">
+          <article class="service-card">
+            <div class="service-icon">✦</div>
+            <h3>Back Pain Care</h3>
+            <p>Physiotherapy support for people experiencing back discomfort.</p>
+          </article>
+
+          <article class="service-card">
+            <div class="service-icon">✦</div>
+            <h3>Neck Pain Care</h3>
+            <p>Individualised physiotherapy support for neck-related concerns.</p>
+          </article>
+
+          <article class="service-card">
+            <div class="service-icon">✦</div>
+            <h3>Knee Rehabilitation</h3>
+            <p>Support for mobility, movement and knee rehabilitation needs.</p>
+          </article>
+
+          <article class="service-card">
+            <div class="service-icon">✦</div>
+            <h3>Stroke Rehabilitation</h3>
+            <p>Home-based rehabilitation support following stroke, where appropriate.</p>
+          </article>
+
+          <article class="service-card">
+            <div class="service-icon">✦</div>
+            <h3>Post-Surgery Rehabilitation</h3>
+            <p>Physiotherapy support as part of an appropriate recovery plan.</p>
+          </article>
+
+          <article class="service-card">
+            <div class="service-icon">✦</div>
+            <h3>Elderly Care</h3>
+            <p>Mobility and movement support for older adults.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="why">
+      <div class="container">
+        <div class="section-heading">
+          <div class="eyebrow">Your comfort matters</div>
+          <h2>Why Choose Home Visits?</h2>
+          <p>Physiotherapy support designed around the convenience of home.</p>
+        </div>
+
+        <div class="why-grid">
+          <div class="why-card">
+            <div class="service-icon">⌂</div>
+            <h3>Home Convenience</h3>
+            <p>Enquire about physiotherapy visits at your home in Cuttack.</p>
+          </div>
+
+          <div class="why-card">
+            <div class="service-icon">♡</div>
+            <h3>Individual Attention</h3>
+            <p>Discuss your needs and appointment requirements directly.</p>
+          </div>
+
+          <div class="why-card">
+            <div class="service-icon">◷</div>
+            <h3>Appointment Enquiry</h3>
+            <p>Contact us to ask about available appointment timings.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="process">
+      <div class="container">
+        <div class="section-heading">
+          <div class="eyebrow">Simple booking process</div>
+          <h2>How It Works</h2>
+          <p>Getting started with a home visit enquiry is simple.</p>
+        </div>
+
+        <div class="steps">
+          <div class="step">
+            <div class="step-number">1</div>
+            <h3>Send an Enquiry</h3>
+            <p>Contact through WhatsApp or the enquiry form.</p>
+          </div>
+
+          <div class="step">
+            <div class="step-number">2</div>
+            <h3>Discuss Your Needs</h3>
+            <p>Share your area and preferred appointment time.</p>
+          </div>
+
+          <div class="step">
+            <div class="step-number">3</div>
+            <h3>Confirm the Visit</h3>
+            <p>Discuss availability and confirm the appointment.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="faq" id="faq">
+      <div class="container">
+        <div class="section-heading">
+          <div class="eyebrow">Need to know more?</div>
+          <h2>Frequently Asked Questions</h2>
+        </div>
+
+        <details>
+          <summary>Which areas do you cover?</summary>
+          <p>Home visit enquiries are welcome from across Cuttack. Visit availability can be confirmed when you contact us.</p>
+        </details>
+
+        <details>
+          <summary>How can I book a home visit?</summary>
+          <p>You can contact us through WhatsApp or submit the online enquiry form.</p>
+        </details>
+
+        <details>
+          <summary>How much does a physiotherapy visit cost?</summary>
+          <p>Please contact us directly to enquire about consultation and home visit fees.</p>
+        </details>
+
+        <details>
+          <summary>Can I ask about appointment availability?</summary>
+          <p>Yes. Send your preferred date and time through WhatsApp or the enquiry form.</p>
+        </details>
+      </div>
+    </section>
+
+    <section class="contact" id="contact">
+      <div class="container">
+        <div class="section-heading">
+          <div class="eyebrow" style="color:#ead9c5">Get in touch</div>
+          <h2>Enquire About a Home Visit</h2>
+          <p>Contact us for service details, fees and appointment availability.</p>
+        </div>
+
+        <div class="contact-grid">
+          <div class="contact-info">
+            <h3>Let's discuss your enquiry.</h3>
+            <p>
+              Home visit physiotherapy enquiries across Cuttack.
+              Reach out by phone or WhatsApp.
+            </p>
+
+            <p><strong>Phone:</strong> +91 97773 84442</p>
+            <p><strong>Service Area:</strong> Cuttack, Odisha</p>
+
+            <a class="button" href="tel:+919777384442">Call Now</a>
+            <a class="button" href="https://wa.me/919777384442" target="_blank" rel="noopener">WhatsApp</a>
+          </div>
+
+          <form id="enquiryForm">
+            <h3>Online Enquiry Form</h3>
+
+            <label for="name">Your Name *</label>
+            <input id="name" name="name" type="text" required placeholder="Enter your name">
+
+            <label for="phone">Phone Number *</label>
+            <input id="phone" name="phone" type="tel" required
+              pattern="[0-9+\s-]{10,15}" placeholder="Enter your phone number">
+
+            <label for="area">Your Area in Cuttack *</label>
+            <input id="area" name="area" type="text" required placeholder="Enter your area">
+
+            <label for="time">Preferred Appointment Time</label>
+            <select id="time" name="time">
+              <option value="">Select preferred time</option>
+              <option>Morning</option>
+              <option>Afternoon</option>
+              <option>Evening</option>
+            </select>
+
+            <label for="message">Enquiry (Optional)</label>
+            <textarea id="message" name="message"
+              placeholder="Write a brief enquiry. Please do not include private medical records."></textarea>
+
+            <button class="button" type="submit">Send Enquiry on WhatsApp</button>
+
+            <p class="form-note">
+              Your enquiry will open in WhatsApp for you to review and send.
+              Please avoid sharing sensitive medical information in this form.
+            </p>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p><strong>Swati Mohapatra | Physiotherapist</strong></p>
+    <p>Home Visit Physiotherapy Services – Cuttack, Odisha</p>
+    <p>© <span id="year"></span> All Rights Reserved.</p>
+  </footer>
+
+  <a class="whatsapp-float"
+     href="https://wa.me/919777384442"
+     target="_blank" rel="noopener">
+    WhatsApp
+  </a>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    document.getElementById("enquiryForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const name = document.getElementById("name").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const area = document.getElementById("area").value.trim();
+      const time = document.getElementById("time").value || "Not specified";
+      const message = document.getElementById("message").value.trim() || "No additional message";
+
+      const text =
+        "Hello, I would like to enquire about home visit physiotherapy.%0A%0A" +
+        "Name: " + encodeURIComponent(name) + "%0A" +
+        "Phone: " + encodeURIComponent(phone) + "%0A" +
+        "Area: " + encodeURIComponent(area) + "%0A" +
+        "Preferred Time: " + encodeURIComponent(time) + "%0A" +
+        "Enquiry: " + encodeURIComponent(message);
+
+      window.open("https://wa.me/919777384442?text=" + text, "_blank");
+    });
+  </script>
+
+</body>
+</html>
