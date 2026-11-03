@@ -410,6 +410,36 @@
       text-align: center;
     }
 
+    .feedback-form {
+      text-align: left;
+      margin-top: 30px;
+      border: 1px solid #e9dfd3;
+      box-shadow: none;
+      padding: 25px;
+    }
+
+    .feedback-form h3 {
+      text-align: center;
+    }
+
+    .consent-label {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-weight: 400;
+      line-height: 1.5;
+    }
+
+    .consent-label input {
+      width: auto;
+      margin-top: 5px;
+    }
+
+    #feedbackMessage {
+      text-align: center;
+      margin-top: 12px;
+    }
+
     .contact {
       background: var(--brown);
       color: white;
@@ -528,9 +558,9 @@
       .service-grid, .why-grid, .steps { grid-template-columns: 1fr; }
       .hero-image { height: 290px; }
       form { padding: 20px; }
-
       .feedback-wrapper { padding: 30px 18px; }
       .feedback-wrapper h3 { font-size: 22px; }
+      .feedback-form { padding: 20px; }
     }
   </style>
 </head>
@@ -750,7 +780,7 @@
       </div>
     </section>
 
-    <!-- PATIENT REVIEWS SECTION -->
+    <!-- PATIENT REVIEWS AND FEEDBACK -->
 
     <section class="feedback-section" id="feedback">
       <div class="container">
@@ -777,15 +807,51 @@
             <p class="reviews-status">Loading patient reviews...</p>
           </div>
 
-          <a
-            class="button"
-            href="https://docs.google.com/forms/d/e/1FAIpQLSfNGFOZLrLBQF5NxtrBPG8Ec63KebUlBbNXU75IqfGsxnODLQ/viewform"
-            target="_blank"
-            rel="noopener">
-            Share Your Feedback ↗
-          </a>
-        </div>
+          <form id="patientFeedbackForm" class="feedback-form">
+            <h3>Share Your Feedback</h3>
 
+            <label for="patientName">Your Name *</label>
+            <input
+              id="patientName"
+              type="text"
+              maxlength="60"
+              required
+              placeholder="Enter your name">
+
+            <label for="patientRating">Your Rating *</label>
+            <select id="patientRating" required>
+              <option value="">Select rating</option>
+              <option value="5">★★★★★ - Excellent</option>
+              <option value="4">★★★★ - Very Good</option>
+              <option value="3">★★★ - Good</option>
+              <option value="2">★★ - Fair</option>
+              <option value="1">★ - Poor</option>
+            </select>
+
+            <label for="patientFeedback">Your Feedback *</label>
+            <textarea
+              id="patientFeedback"
+              maxlength="1000"
+              required
+              placeholder="Share your experience"></textarea>
+
+            <label class="consent-label" for="patientConsent">
+              <input id="patientConsent" type="checkbox" required>
+              <span>
+                I give permission for my name and feedback to be displayed
+                publicly if approved.
+              </span>
+            </label>
+
+            <button class="button" id="feedbackSubmitButton" type="submit">
+              Submit Feedback
+            </button>
+
+            <p id="feedbackMessage" class="form-note" aria-live="polite">
+              Your feedback will be reviewed before appearing publicly.
+            </p>
+          </form>
+        </div>
       </div>
     </section>
 
@@ -856,77 +922,181 @@
   </footer>
 
   <a class="whatsapp-float"
-     href="https://wa.me/919777384442"
+     href="https://wa.me/9197773844442"
      target="_blank" rel="noopener">
     WhatsApp
   </a>
 
-  <script>
-    document.getElementById("year").textContent = new Date().getFullYear();
+  <!-- FIREBASE AND WEBSITE JAVASCRIPT -->
 
-    // LOAD APPROVED PATIENT REVIEWS USING JSONP
+  <script type="module">
+    import { initializeApp } from
+      "https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js";
 
-    const reviewsAPI = "https://script.google.com/macros/s/AKfycbxqSaXqoo95JTDw4uTwEm6FPojlk0K5evEW1rrDcNA/exec";
+    import {
+      getFirestore,
+      collection,
+      addDoc,
+      serverTimestamp,
+      getDocs,
+      query,
+      where
+    } from
+      "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
 
-    function handlePatientReviews(reviews) {
+    const firebaseConfig = {
+      apiKey: "AIzaSyDI3MJtkXdGr-3erPoTi0tSAWjxrlgswf0",
+      authDomain: "swati-physiotherapy.firebaseapp.com",
+      projectId: "swati-physiotherapy",
+      storageBucket: "swati-physiotherapy.firebasestorage.app",
+      messagingSenderId: "612160745195",
+      appId: "1:612160745195:web:cbc3ba12b3b71f848a18ae",
+      measurementId: "G-9HM34782QL"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    document.getElementById("year").textContent =
+      new Date().getFullYear();
+
+    // LOAD ONLY APPROVED AND CONSENTED REVIEWS
+
+    async function loadPatientReviews() {
       const reviewsList = document.getElementById("reviewsList");
 
-      reviewsList.textContent = "";
+      try {
+        const approvedQuery = query(
+          collection(db, "reviews"),
+          where("status", "==", "approved"),
+          where("consent", "==", true)
+        );
 
-      if (!Array.isArray(reviews)) {
-        reviewsList.textContent = "Reviews could not be loaded right now.";
-        console.error("Reviews API response:", reviews);
-        return;
+        const snapshot = await getDocs(approvedQuery);
+
+        reviewsList.textContent = "";
+
+        if (snapshot.empty) {
+          const message = document.createElement("p");
+          message.className = "reviews-status";
+          message.textContent =
+            "No approved patient reviews are available yet.";
+          reviewsList.appendChild(message);
+          return;
+        }
+
+        const reviews = snapshot.docs.map(document => document.data());
+
+        reviews.sort((a, b) => {
+          const dateA = a.createdAt?.toMillis?.() || 0;
+          const dateB = b.createdAt?.toMillis?.() || 0;
+          return dateB - dateA;
+        });
+
+        reviews.forEach(review => {
+          const card = document.createElement("article");
+          card.className = "review-card";
+
+          const stars = document.createElement("div");
+          stars.className = "review-stars";
+
+          const rating = Math.max(
+            0,
+            Math.min(5, Number(review.rating) || 0)
+          );
+
+          stars.textContent =
+            "★".repeat(rating) + "☆".repeat(5 - rating);
+
+          const name = document.createElement("h4");
+          name.textContent = review.name || "Patient";
+
+          const feedback = document.createElement("p");
+          feedback.textContent = review.feedback || "";
+
+          const date = document.createElement("div");
+          date.className = "review-date";
+
+          if (review.createdAt?.toDate) {
+            date.textContent =
+              review.createdAt.toDate().toLocaleDateString("en-IN");
+          }
+
+          card.append(stars, name, feedback, date);
+          reviewsList.appendChild(card);
+        });
+
+      } catch (error) {
+        console.error("Error loading reviews:", error);
+        reviewsList.textContent =
+          "Reviews could not be loaded right now.";
       }
-
-      if (reviews.length === 0) {
-        const message = document.createElement("p");
-        message.className = "reviews-status";
-        message.textContent = "No approved patient reviews are available yet.";
-        reviewsList.appendChild(message);
-        return;
-      }
-
-      reviews.forEach(review => {
-        const card = document.createElement("article");
-        card.className = "review-card";
-
-        const stars = document.createElement("div");
-        stars.className = "review-stars";
-
-        const rating = Math.max(0, Math.min(5, Number(review.rating) || 0));
-        stars.textContent = "★".repeat(rating) + "☆".repeat(5 - rating);
-
-        const name = document.createElement("h4");
-        name.textContent = review.name || "Patient";
-
-        const feedback = document.createElement("p");
-        feedback.textContent = review.feedback || "";
-
-        const date = document.createElement("div");
-        date.className = "review-date";
-        date.textContent = review.date || "";
-
-        card.append(stars, name, feedback, date);
-        reviewsList.appendChild(card);
-      });
-    }
-
-    function loadPatientReviews() {
-      const reviewsList = document.getElementById("reviewsList");
-
-      const script = document.createElement("script");
-      script.src = reviewsAPI + "?callback=handlePatientReviews&t=" + Date.now();
-
-      script.onerror = function() {
-        reviewsList.textContent = "Reviews could not be loaded right now.";
-        console.error("Unable to load the patient reviews script.");
-      };
-
-      document.body.appendChild(script);
     }
 
     loadPatientReviews();
+
+    // SUBMIT PATIENT FEEDBACK TO FIRESTORE
+
+    const feedbackForm =
+      document.getElementById("patientFeedbackForm");
+
+    feedbackForm.addEventListener("submit", async function(event) {
+      event.preventDefault();
+
+      const name =
+        document.getElementById("patientName").value.trim();
+
+      const rating =
+        Number(document.getElementById("patientRating").value);
+
+      const feedback =
+        document.getElementById("patientFeedback").value.trim();
+
+      const consent =
+        document.getElementById("patientConsent").checked;
+
+      const message =
+        document.getElementById("feedbackMessage");
+
+      const submitButton =
+        document.getElementById("feedbackSubmitButton");
+
+      if (!name || !rating || !feedback || !consent) {
+        message.textContent =
+          "Please complete all fields and give your consent.";
+        return;
+      }
+
+      submitButton.disabled = true;
+      submitButton.textContent = "Submitting...";
+      message.textContent = "Please wait while your feedback is submitted.";
+
+      try {
+        await addDoc(collection(db, "reviews"), {
+          name: name,
+          rating: rating,
+          feedback: feedback,
+          consent: true,
+          status: "pending",
+          createdAt: serverTimestamp()
+        });
+
+        feedbackForm.reset();
+
+        message.textContent =
+          "Thank you! Your feedback has been submitted for review.";
+
+      } catch (error) {
+        console.error("Feedback submission error:", error);
+
+        message.textContent =
+          "Sorry, feedback could not be submitted. Please try again later.";
+
+      } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = "Submit Feedback";
+      }
+    });
 
     // WHATSAPP ENQUIRY FORM
 
