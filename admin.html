@@ -1,0 +1,249 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | Dr. Swati Mohapatra</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 24px;
+      font-family: Arial, sans-serif;
+      background: #f7f3ed;
+      color: #382d27;
+    }
+    .container {
+      max-width: 850px;
+      margin: 30px auto;
+      background: white;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px #00000012;
+    }
+    h1 { color: #76533e; }
+    input {
+      display: block;
+      width: 100%;
+      padding: 13px;
+      margin: 12px 0;
+      border: 1px solid #d8c9bc;
+      border-radius: 6px;
+    }
+    button {
+      padding: 11px 17px;
+      margin: 5px 5px 5px 0;
+      border: 0;
+      border-radius: 6px;
+      cursor: pointer;
+      background: #76533e;
+      color: white;
+    }
+    button.reject { background: #a33d35; }
+    button.logout { background: #555; }
+    .review {
+      border: 1px solid #e4d9d0;
+      padding: 16px;
+      margin: 15px 0;
+      border-radius: 8px;
+    }
+    .status { font-weight: bold; }
+    #message { margin: 12px 0; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Dr. Swati Mohapatra</h1>
+    <h2>Patient Feedback Admin</h2>
+
+    <div id="loginBox">
+      <h3>Admin Login</h3>
+      <input id="email" type="email" placeholder="Admin email">
+      <input id="password" type="password" placeholder="Password">
+      <button id="loginBtn">Login</button>
+    </div>
+
+    <div id="dashboard" class="hidden">
+      <p>Logged in as admin</p>
+      <button id="refreshBtn">Refresh Reviews</button>
+      <button id="logoutBtn" class="logout">Logout</button>
+      <div id="reviews"></div>
+    </div>
+
+    <p id="message"></p>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from
+      "https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js";
+
+    import {
+      getAuth,
+      signInWithEmailAndPassword,
+      onAuthStateChanged,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-auth.js";
+
+    import {
+      getFirestore,
+      collection,
+      getDocs,
+      doc,
+      updateDoc,
+      query,
+      orderBy
+    } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDI3MJtkXdGr-3erPoTi0tSAWjxrlgswf0",
+      authDomain: "swati-physiotherapy.firebaseapp.com",
+      projectId: "swati-physiotherapy",
+      storageBucket: "swati-physiotherapy.firebasestorage.app",
+      messagingSenderId: "612160745195",
+      appId: "1:612160745195:web:cbc3ba12b3b71f848a18ae",
+      measurementId: "G-9HM34782QL"
+    };
+
+    const ADMIN_UID = "hBZtkz7n5CNNkJqlK7or9wlFaAk2";
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const loginBox = document.getElementById("loginBox");
+    const dashboard = document.getElementById("dashboard");
+    const message = document.getElementById("message");
+    const reviewsDiv = document.getElementById("reviews");
+
+    function showMessage(text) {
+      message.textContent = text;
+    }
+
+    document.getElementById("loginBtn").addEventListener("click", async () => {
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+
+      if (!email || !password) {
+        showMessage("Please enter email and password.");
+        return;
+      }
+
+      showMessage("Logging in...");
+
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+      } catch (error) {
+        showMessage("Login failed: " + error.message);
+      }
+    });
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user && user.uid === ADMIN_UID) {
+        loginBox.classList.add("hidden");
+        dashboard.classList.remove("hidden");
+        showMessage("Login successful.");
+        await loadReviews();
+      } else {
+        dashboard.classList.add("hidden");
+        loginBox.classList.remove("hidden");
+
+        if (user) {
+          await signOut(auth);
+          showMessage("Access denied. Admin account only.");
+        }
+      }
+    });
+
+    async function loadReviews() {
+      reviewsDiv.replaceChildren();
+      showMessage("Loading reviews...");
+
+      try {
+        const reviewQuery = query(
+          collection(db, "reviews"),
+          orderBy("createdAt", "desc")
+        );
+
+        const snapshot = await getDocs(reviewQuery);
+
+        if (snapshot.empty) {
+          showMessage("No feedback submitted yet.");
+          return;
+        }
+
+        snapshot.forEach((reviewDoc) => {
+          const data = reviewDoc.data();
+
+          const card = document.createElement("div");
+          card.className = "review";
+
+          const name = document.createElement("h3");
+          name.textContent = data.name || "Anonymous";
+
+          const rating = document.createElement("p");
+          rating.textContent = "Rating: " + (data.rating || "-") + "/5";
+
+          const feedback = document.createElement("p");
+          feedback.textContent = data.feedback || "";
+
+          const status = document.createElement("p");
+          status.className = "status";
+          status.textContent = "Status: " + (data.status || "unknown");
+
+          card.append(name, rating, feedback, status);
+
+          if (data.status === "pending") {
+            const approveBtn = document.createElement("button");
+            approveBtn.textContent = "Approve";
+
+            approveBtn.addEventListener("click", () =>
+              changeStatus(reviewDoc.id, "approved")
+            );
+
+            const rejectBtn = document.createElement("button");
+            rejectBtn.textContent = "Reject";
+            rejectBtn.className = "reject";
+
+            rejectBtn.addEventListener("click", () =>
+              changeStatus(reviewDoc.id, "rejected")
+            );
+
+            card.append(approveBtn, rejectBtn);
+          }
+
+          reviewsDiv.appendChild(card);
+        });
+
+        showMessage("Reviews loaded.");
+      } catch (error) {
+        showMessage("Could not load reviews: " + error.message);
+      }
+    }
+
+    async function changeStatus(reviewId, newStatus) {
+      const confirmed = confirm("Change review status to " + newStatus + "?");
+      if (!confirmed) return;
+
+      try {
+        await updateDoc(doc(db, "reviews", reviewId), {
+          status: newStatus
+        });
+
+        showMessage("Review updated successfully.");
+        await loadReviews();
+      } catch (error) {
+        showMessage("Update failed: " + error.message);
+      }
+    }
+
+    document.getElementById("refreshBtn").addEventListener("click", loadReviews);
+
+    document.getElementById("logoutBtn").addEventListener("click", async () => {
+      await signOut(auth);
+      showMessage("Logged out.");
+    });
+  </script>
+</body>
+</html>
