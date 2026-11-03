@@ -23,7 +23,6 @@
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
     html { scroll-behavior: smooth; }
 
     body {
@@ -332,40 +331,83 @@
       padding-top: 12px;
     }
 
-    /* PATIENT FEEDBACK SECTION */
+    /* PATIENT REVIEWS SECTION */
 
-    .feedback-section {
-      background: var(--cream);
-    }
+    .feedback-section { background: #f0e9df; }
 
     .feedback-wrapper {
-      max-width: 850px;
+      max-width: 760px;
       margin: auto;
+      padding: 38px 25px;
       background: white;
-      padding: 18px;
-      border-radius: 10px;
       border: 1px solid #e9dfd3;
+      border-radius: 12px;
+      text-align: center;
       box-shadow: 0 8px 25px #59432a0d;
     }
 
-    .feedback-frame {
-      display: block;
-      width: 100%;
-      height: 850px;
-      border: none;
-      border-radius: 6px;
-      background: white;
+    .feedback-icon {
+      font-size: 42px;
+      color: var(--brown);
+      margin-bottom: 14px;
+      line-height: 1;
     }
 
-    .feedback-action {
-      text-align: center;
-      margin-top: 25px;
+    .feedback-wrapper h3 {
+      font-size: 25px;
+      margin-bottom: 12px;
     }
 
-    .feedback-action p {
+    .feedback-wrapper p {
       color: var(--muted);
       font-size: 14px;
-      margin-bottom: 15px;
+      max-width: 540px;
+      margin: 0 auto 24px;
+    }
+
+    .reviews-list {
+      display: grid;
+      gap: 16px;
+      margin: 25px 0;
+      text-align: left;
+    }
+
+    .review-card {
+      background: #fffdfa;
+      border: 1px solid #e9dfd3;
+      border-radius: 8px;
+      padding: 22px;
+    }
+
+    .review-stars {
+      color: #b48743;
+      font-size: 19px;
+      letter-spacing: 3px;
+      margin-bottom: 8px;
+    }
+
+    .review-card h4 {
+      font-size: 16px;
+      margin-bottom: 5px;
+    }
+
+    .review-card p {
+      color: var(--muted);
+      font-size: 14px;
+      margin: 10px 0;
+      overflow-wrap: anywhere;
+    }
+
+    .review-date {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .reviews-status {
+      color: var(--muted);
+      font-size: 14px;
+      margin: 20px 0;
+      text-align: center;
     }
 
     .contact {
@@ -487,13 +529,8 @@
       .hero-image { height: 290px; }
       form { padding: 20px; }
 
-      .feedback-wrapper {
-        padding: 8px;
-      }
-
-      .feedback-frame {
-        height: 950px;
-      }
+      .feedback-wrapper { padding: 30px 18px; }
+      .feedback-wrapper h3 { font-size: 22px; }
     }
   </style>
 </head>
@@ -713,45 +750,39 @@
       </div>
     </section>
 
-    <!-- PATIENT FEEDBACK SECTION -->
+    <!-- PATIENT REVIEWS SECTION -->
 
     <section class="feedback-section" id="feedback">
       <div class="container">
 
         <div class="section-heading">
           <div class="eyebrow">Your experience matters</div>
-          <h2>Patient Feedback</h2>
+          <h2>Patient Reviews</h2>
           <p>
-            Your feedback helps us understand your experience and
-            improve our physiotherapy services.
-            We appreciate you taking a moment to share your thoughts.
+            Read shared patient experiences and help us improve our services.
           </p>
         </div>
 
         <div class="feedback-wrapper">
+          <div class="feedback-icon">♡</div>
 
-          <iframe
-            class="feedback-frame"
-            src="https://docs.google.com/forms/d/e/1FAIpQLSfNGFOZLrLBQF5NxtrBPG8Ec63KebUlBbNXU75IqfGsxnODLQ/viewform?embedded=true"
-            title="Dr. Swati Mohapatra Patient Feedback Form"
-            loading="lazy">
-            Loading patient feedback form...
-          </iframe>
+          <h3>Patient Experiences</h3>
 
-        </div>
-
-        <div class="feedback-action">
           <p>
-            Having trouble viewing the feedback form?
-            You can open it separately.
+            Read feedback shared by patients who have given permission
+            for their reviews to be displayed publicly.
           </p>
+
+          <div id="reviewsList" class="reviews-list">
+            <p class="reviews-status">Loading patient reviews...</p>
+          </div>
 
           <a
             class="button"
             href="https://docs.google.com/forms/d/e/1FAIpQLSfNGFOZLrLBQF5NxtrBPG8Ec63KebUlBbNXU75IqfGsxnODLQ/viewform"
             target="_blank"
             rel="noopener">
-            Open Feedback Form
+            Share Your Feedback ↗
           </a>
         </div>
 
@@ -832,6 +863,72 @@
 
   <script>
     document.getElementById("year").textContent = new Date().getFullYear();
+
+    // LOAD APPROVED PATIENT REVIEWS USING JSONP
+
+    const reviewsAPI = "https://script.google.com/macros/s/AKfycbxqSaXqoo95JTDw4uTwEm6FPojlk0K5evEW1rrDcNA/exec";
+
+    function handlePatientReviews(reviews) {
+      const reviewsList = document.getElementById("reviewsList");
+
+      reviewsList.textContent = "";
+
+      if (!Array.isArray(reviews)) {
+        reviewsList.textContent = "Reviews could not be loaded right now.";
+        console.error("Reviews API response:", reviews);
+        return;
+      }
+
+      if (reviews.length === 0) {
+        const message = document.createElement("p");
+        message.className = "reviews-status";
+        message.textContent = "No approved patient reviews are available yet.";
+        reviewsList.appendChild(message);
+        return;
+      }
+
+      reviews.forEach(review => {
+        const card = document.createElement("article");
+        card.className = "review-card";
+
+        const stars = document.createElement("div");
+        stars.className = "review-stars";
+
+        const rating = Math.max(0, Math.min(5, Number(review.rating) || 0));
+        stars.textContent = "★".repeat(rating) + "☆".repeat(5 - rating);
+
+        const name = document.createElement("h4");
+        name.textContent = review.name || "Patient";
+
+        const feedback = document.createElement("p");
+        feedback.textContent = review.feedback || "";
+
+        const date = document.createElement("div");
+        date.className = "review-date";
+        date.textContent = review.date || "";
+
+        card.append(stars, name, feedback, date);
+        reviewsList.appendChild(card);
+      });
+    }
+
+    function loadPatientReviews() {
+      const reviewsList = document.getElementById("reviewsList");
+
+      const script = document.createElement("script");
+      script.src = reviewsAPI + "?callback=handlePatientReviews&t=" + Date.now();
+
+      script.onerror = function() {
+        reviewsList.textContent = "Reviews could not be loaded right now.";
+        console.error("Unable to load the patient reviews script.");
+      };
+
+      document.body.appendChild(script);
+    }
+
+    loadPatientReviews();
+
+    // WHATSAPP ENQUIRY FORM
 
     document.getElementById("enquiryForm").addEventListener("submit", function(event) {
       event.preventDefault();
