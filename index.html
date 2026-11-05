@@ -370,6 +370,29 @@
       gap: 16px;
       margin: 25px 0;
       text-align: left;
+
+      /* Keep the review area compact; scroll inside it when there are many reviews. */
+      max-height: 360px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 4px 10px 4px 4px;
+      overscroll-behavior: contain;
+      scrollbar-width: thin;
+      scrollbar-color: var(--brown) var(--beige);
+    }
+
+    .reviews-list::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .reviews-list::-webkit-scrollbar-track {
+      background: var(--beige);
+      border-radius: 10px;
+    }
+
+    .reviews-list::-webkit-scrollbar-thumb {
+      background: var(--brown);
+      border-radius: 10px;
     }
 
     .review-card {
